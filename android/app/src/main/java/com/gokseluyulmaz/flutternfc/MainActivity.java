@@ -81,8 +81,8 @@ public class MainActivity extends FlutterActivity {
                         } else if (call.method.equals("getCardUID")) {
                             result.success(getCardUID());
                         } else if (call.method.equals("getVersion")) {
-                            String command = call.argument("command");
-                            result.success(getVersion(command));
+                            String commands = call.argument("commands");
+                            result.success(getVersion(commands));
                         } else {
                             result.notImplemented();
                         }
@@ -101,7 +101,7 @@ public class MainActivity extends FlutterActivity {
         } else {
             Log.i("", "mAdapter null");
         }
-        setIsoDep(getIntent());
+        //setIsoDep(getIntent());
 
     }
 
@@ -122,12 +122,15 @@ public class MainActivity extends FlutterActivity {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private void setIsoDep(Intent intent) {
         try {
+            Log.i("","setIsoDep entered");
             if (intent == null) {
+                Log.i("","intent null");
                 return;
             }
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
             if (tag == null) {
+                Log.i("","tag null");
                 return;
             }
 
@@ -135,9 +138,14 @@ public class MainActivity extends FlutterActivity {
 
             if (isoDep != null && !isoDep.isConnected()) {
                 isoDep.connect();
+                Log.i("","isodep connect ok");
+            }
+            else
+            {
+                Log.i("","isodep null or connect not ok");
             }
         } catch (Exception e) {
-
+            Log.e("","",e);
         }
     }
 
@@ -148,20 +156,22 @@ public class MainActivity extends FlutterActivity {
                 byte[] uid = isoDep.getTag().getId();
                 return ByteArrayToHexString(uid);
             } else {
+                Log.i("","not connected or null");
                 return "not connected";
             }
         } catch (Exception e) {
+            Log.e("","",e);
             return e.toString();
         }
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @SuppressLint("MissingPermission")
-    private String getVersion(String command) {
-        Log.i("getVersion", command);
+    private String getVersion(String commands) {
+        Log.i("getVersion", commands);
         try {
             if (isoDep != null && isoDep.isConnected()) {
-                String[] cmdArray = command.split("#");
+                String[] cmdArray = commands.split("#");
                 StringBuilder responses = new StringBuilder();
                 for (int i = 0; i < cmdArray.length; i++) {
                     Log.i("", cmdArray[i]);
@@ -171,9 +181,11 @@ public class MainActivity extends FlutterActivity {
                 }
                 return responses.toString();
             } else {
+                Log.i("","not connected or null");
                 return "not connected";
             }
         } catch (Exception e) {
+            Log.e("","",e);
             return e.toString();
         }
     }

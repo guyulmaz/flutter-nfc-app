@@ -28,21 +28,21 @@ class _PlatformChannelState extends State<PlatformChannel> {
 
   //String _chargingStatus = 'Battery status: unknown.';
 
-  Future<Null> _getBatteryLevel() async {
-    String batteryLevel;
+  Future<Null> _getCardUID() async {
+    String response;
     try {
 //      final int result = await methodChannel.invokeMethod('getBatteryLevel');
       final String result = await methodChannel.invokeMethod('getCardUID');
       if (result != null) {
-        batteryLevel = 'Get UID: $result';
+        response = 'Get UID: $result';
       } else {
-        batteryLevel = 'Get UID failed';
+        response = 'Get UID failed';
       }
     } on PlatformException {
-      batteryLevel = 'Get UID failed, PlatformException';
+      response = 'Get UID failed, PlatformException';
     }
     setState(() {
-      _cardUid = batteryLevel;
+      _cardUid = response;
     });
   }
 
@@ -52,7 +52,7 @@ class _PlatformChannelState extends State<PlatformChannel> {
 //      final int result = await methodChannel.invokeMethod('getBatteryLevel');
       final String result =
           await methodChannel.invokeMethod('getVersion', <String, dynamic>{
-        'command': cmd,
+        'commands': cmd,
       });
       if (result != null) {
         response = 'getVersion: $result';
@@ -76,24 +76,24 @@ class _PlatformChannelState extends State<PlatformChannel> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    //eventChannel.receiveBroadcastStream().listen(_onEvent, onError: _onError);
-  }
-
-  void _onEvent(Object event) {
-    setState(() {
-      //_chargingStatus =
-      //"Battery status: ${event == 'charging' ? '' : 'dis'}charging.";
-    });
-  }
-
-  void _onError(Object error) {
-    setState(() {
-      //_chargingStatus = 'Battery status: unknown.';
-    });
-  }
+//  @override
+//  void initState() {
+//    super.initState();
+//    //eventChannel.receiveBroadcastStream().listen(_onEvent, onError: _onError);
+//  }
+//
+//  void _onEvent(Object event) {
+//    setState(() {
+//      //_chargingStatus =
+//      //"Battery status: ${event == 'charging' ? '' : 'dis'}charging.";
+//    });
+//  }
+//
+//  void _onError(Object error) {
+//    setState(() {
+//      //_chargingStatus = 'Battery status: unknown.';
+//    });
+//  }
 
   String getVersionArray = "9060000000#90AF000000#90AF000000";
 
@@ -111,7 +111,7 @@ class _PlatformChannelState extends State<PlatformChannel> {
                 padding: const EdgeInsets.all(16.0),
                 child: new RaisedButton(
                   child: const Text('get uid'),
-                  onPressed: _getBatteryLevel,
+                  onPressed: _getCardUID,
                 ),
               ),
               new Text(_getVersion1, key: const Key('getversion1 label')),
